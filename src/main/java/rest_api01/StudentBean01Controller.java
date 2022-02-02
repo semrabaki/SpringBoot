@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+
+
 //@Controller //it the layer of the class that handles all the request, understand the request type like if it is get or put etc
 @RestController
 public class StudentBean01Controller {
@@ -65,6 +67,10 @@ public class StudentBean01Controller {
 	@Autowired
 	StudentBean01 s2;
 	
+	//OR
+	//@Autowired
+	//StudentInterface s2;
+	
 	@GetMapping(path="/getParameterized2/{school}")
 	public StudentBean01 getMethod5(@PathVariable String school) {
 		
@@ -117,13 +123,18 @@ public class StudentBean01Controller {
 		return std.study();
 	}
 	
+	//@Autowired//Means you assigned the object(bean) to the std object
+	//@Qualifier(value="studentBean01")//If you have multiple object in a data type inside the container
+	                                 //use @Qualifier(value=<Class name with lowercase initial>) annotation to select a specific object
+	//StudentInterface std;
 
 
 	
 	
 	
-//	@Autowired
-//	StudentBean02 std;
+//	@Autowired  will select the bean by looking at the data type. If you have multiple object in the same data type you need to use Qulifier to tell which one you want  
+//	StudentInterface std;
+	//@Qualifier(values="studentBean01")
 //	@GetMapping (path="/getMessage")
 //	public String getMethod8()
 //	{
