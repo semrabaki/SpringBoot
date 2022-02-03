@@ -1,5 +1,6 @@
 package rest_api_03_Mr.Suleyman_basic_authentication;
 
+import java.sql.SQLException;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +10,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -45,15 +47,21 @@ public class StudentBean04Controller {
 	
 	
 	@PutMapping(path="/updateStudentFully/{id}")
-	@PreAuthorize("hasAuthority('student:write')")
 	public StudentBean04 fullyUpdateStudentById(@PathVariable Long id,@Validated @RequestBody StudentBean04 newStudent) { //since i am using object in here i am using @requestnody
 		return studentService.fullyUpdateStudent(id, newStudent);
 	}
 	
 	@PatchMapping(path="/updateStudentPartially/{id}")
-	@PreAuthorize("hasAuthority('student:write')")
 	public StudentBean04 partiallyUpdateStudentById(@PathVariable Long id, @RequestBody StudentBean04 newStudent) {
 		return studentService.partiallyUpdateStudent(id, newStudent);
 	}	
 
+	@PostMapping(path="/addNewStudent")
+	public StudentBean04 postStudent( @Validated @RequestBody StudentBean04 newStudent) throws ClassNotFoundException, SQLException {
+		return studentService.addNewStudent(newStudent);
+	}	
+
+	
+	
+	
 }

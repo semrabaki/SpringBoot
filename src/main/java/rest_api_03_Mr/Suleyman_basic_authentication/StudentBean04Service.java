@@ -138,8 +138,101 @@ private StudentBean04Repository studentRepo;
 
 	 */
 	
+	public StudentBean04 partiallyUpdateStudent(Long id, StudentBean04 newStudent)
+	{
+		StudentBean04 existingStudentById= studentRepo.findById(id).orElseThrow(()-> new IllegalStateException(id+ "   does not exist in the repo"));
+		
+		if(newStudent.getName()!=null && newStudent.getName().equals(existingStudentById.getName())) {
+			existingStudentById.setName(newStudent.getName());
+		}
+		
+		//To update email
+		
+		Optional<StudentBean04>existingStudentByEmail= studentRepo.findStudentBean04ByEmail(newStudent.getEmail());
+		
+		if(existingStudentByEmail.isPresent()) {
+			throw new IllegalStateException("Email must be unique...");
+	    }else if (newStudent.getEmail()==null) {
+	    	throw new IllegalStateException("Email connaot be null, it is mandatory... "); //this should be before the @ because null email do not contain it
+	    	
+	    }else if(newStudent.getEmail().contains("@")) {
+	    	
+	    	throw new IllegalStateException("Email must contain @ sign...");
+	    	
+	    }else if(newStudent.getEmail()!=null) {
+	    	
+	    	existingStudentById.setEmail(newStudent.getEmail());
+	    }
 	
 	
+	   //To update dob
+
+		if(Period.between(newStudent.getDob(), LocalDate.now()).isNegative()) {
+			throw new IllegalStateException("Date of birth cannot be greater than current date");
+		}else if(newStudent.getDob()!=null)
+		{
+			existingStudentById.setDob(newStudent.getDob());
+		}
+		
+		// To update age
+		
+		existingStudentById.setAge(newStudent.getAge());
+		
+		//To update error message
+		
+		existingStudentById.setErrMsg("No Error....");
+		
+		
+	
+		return studentRepo.save(existingStudentById);
+}
+	
+
+	
+    /*
+     For Post Request
+     1) If the email exists throw Exception
+     2)If the email is null new data cannot be created
+     
+     	Note To create new data in DB , you must create connection with DB     */
+	
+	public StudentBean04 addNewStudent(StudentBean04 newStudent) throws ClassNotFoundException, SQLException {
+		
+		Optional<StudentBean04>existingStudentByEmail= studentRepo.findStudentBean04ByEmail(newStudent.getEmail());
+		
+		if(existingStudentByEmail.isPresent()) {
+			throw new IllegalStateException("Email exists, make it unique...");
+		}
+		
+		if(newStudent.getEmail()==null) {
+			throw new IllegalStateException("Without using email, new data cannot be created");
+		}
+		
+		//To create connection with DB
+				Class.forName("oracle.jdbc.driver.OracleDriver");
+				
+				Connection con = DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521/xe", "hr", "hr");
+				
+				Statement st = con.createStatement();
+				
+				String sqlQuery = "SELECT MAX(id) FROM students"; //I need to get the max id because when you add a new id  I am getting last id and increase it by one
+				
+				ResultSet result = st.executeQuery(sqlQuery);
+				
+				Long maxId=0L;
+		
+				while (result.next()) {
+					maxId=result.getLong(1); //I put 1 in get because it is referencing the id column in the database which is the first column in the database you can also write it " id" likehat
+				}
+				
+				newStudent.setId(maxId +1);
+				newStudent.setAge(newStudent.getAge());
+				newStudent.setErrMsg("No Error");
+				
+				return studentRepo.save(newStudent);
+		
+		
+	}
 	
 	
 
