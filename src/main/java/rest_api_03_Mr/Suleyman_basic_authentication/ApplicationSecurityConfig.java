@@ -12,13 +12,22 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 
+
+/*
+      Admin=> GET(Read), PUT+POST+PATCH+DELETE(Write)
+      Student=>Get(Read)
+ */
+
+
+
+
 @Configuration
 @EnableWebSecurity
 public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
-		http.
+		http.csrf().disable(). //csrf().disable(). lets you to use delete, put,post patch methods
 		authorizeRequests().
 		antMatchers("/","index","/css/*","js/*").permitAll(). //if you see  home page or any css or js codes make tehm public
 		anyRequest().
@@ -47,7 +56,14 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
 								roles("STUDENT").
 								build();
 		
-		return new InMemoryUserDetailsManager(student);
+		UserDetails admin= User. 
+				builder().
+				username("admin").
+				password(passwordEncoder.encode("nimda")). // in here I am giving my password to spring boot to encode and use
+				roles("ADMIN").
+				build();
+		
+		return new InMemoryUserDetailsManager(student,admin);
 		
 	}
 

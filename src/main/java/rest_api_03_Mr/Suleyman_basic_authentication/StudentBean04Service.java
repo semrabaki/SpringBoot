@@ -155,7 +155,7 @@ private StudentBean04Repository studentRepo;
 	    }else if (newStudent.getEmail()==null) {
 	    	throw new IllegalStateException("Email connaot be null, it is mandatory... "); //this should be before the @ because null email do not contain it
 	    	
-	    }else if(newStudent.getEmail().contains("@")) {
+	    }else if(!newStudent.getEmail().contains("@")) {
 	    	
 	    	throw new IllegalStateException("Email must contain @ sign...");
 	    	
