@@ -167,16 +167,16 @@ private StudentBean04Repository studentRepo;
 	
 	   //To update dob
 
-		if(Period.between(newStudent.getDob(), LocalDate.now()).isNegative()) {
+		//To update dob
+		if(newStudent.getDob()==null) {
+			existingStudentById.setAge(existingStudentById.getAge());
+		}else if(Period.between(newStudent.getDob(), LocalDate.now()).isNegative()) {
 			throw new IllegalStateException("Date of birth cannot be greater than current date");
-		}else if(newStudent.getDob()!=null)
-		{
+		}else if(newStudent.getDob()!=null) {
 			existingStudentById.setDob(newStudent.getDob());
+			existingStudentById.setAge(newStudent.getAge());
 		}
 		
-		// To update age
-		
-		existingStudentById.setAge(newStudent.getAge());
 		
 		//To update error message
 		
